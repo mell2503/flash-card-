@@ -1,48 +1,169 @@
 <!doctype html>
-<html>
+<html lang="id">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Irodori</title>
+<title>Irodori A2.2</title>
 <style>
-body {
-  background:#000;
-  color:#fff;
-  font-family:monospace;
-  margin:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:14px;
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#000;color:#fff;font-family:monospace;display:flex;flex-direction:column;align-items:center;padding:12px;min-height:100vh}
+.header{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:flex-start;margin-top:8px}
+.title{color:#ffdd00;font-weight:900;line-height:1.1;font-size:18px;letter-spacing:2px}
+.furi-btn{border:1.5px solid #555;border-radius:20px;padding:6px 14px;color:#aaa;font-size:12px;background:#111;cursor:pointer;line-height:1.2;text-align:center}
+.furi-btn b{display:block;color:#fff;font-weight:900}
+.counter{width:100%;max-width:420px;text-align:center;color:#444;margin:16px 0;letter-spacing:4px;font-size:14px}
+.card{width:100%;max-width:420px;height:520px;background:#0a0a0a;border:1.5px solid #555;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;cursor:pointer;user-select:none}
+.word{font-size:54px;font-weight:900;text-align:center;padding:20px}
+.read{font-size:20px;color:#888;margin-top:8px;display:none}
+.mean{font-size:20px;color:#ffdd00;margin-top:12px;text-align:center;display:none;padding:0 16px}
+.hint{position:absolute;bottom:22px;color:#333;font-size:12px;letter-spacing:2px}
+.btn-row{width:100%;max-width:420px;display:flex;gap:12px;margin-top:14px}
+.btn{flex:1;height:52px;border-radius:12px;background:#000;font-family:monospace;font-size:13px;letter-spacing:2px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.btn-white{border:2px solid #fff;color:#fff}
+.btn-green{border:2px solid #00ff66;color:#00ff66}
+.btn-red{width:100%;max-width:420px;height:52px;border-radius:12px;border:2px solid #ff4444;color:#ff5555;background:#000;margin-top:12px;font-family:monospace;letter-spacing:2px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.footer{margin-top:12px;color:#222;font-size:10px;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="title">IRODORI A2.2 -<br>BAB<br>13</div>
+<button class="furi-btn" id="furiBtn" onclick="toggleFuri()"><b>ふりがな</b>OFF</button>
+</div>
+<div class="counter" id="counter">1 / 88</div>
+
+<div class="card" id="card">
+<div class="word" id="w"></div>
+<div class="read" id="k"></div>
+<div class="mean" id="m"></div>
+<div class="hint" id="hint">ketuk untuk jawaban</div>
+</div>
+
+<div class="btn-row">
+<div class="btn btn-white" onclick="acak()">🎲 Acak Kartu</div>
+<div class="btn btn-green" onclick="hafal()">✅ Sudah Hafal</div>
+</div>
+<div class="btn-red">← Kembali ke Menu</div>
+<div class="footer" id="footer"></div>
+
+<script>
+const DATA=[
+['公共','こうきょう','publik'],
+['施設','しせつ','fasilitas'],
+['図書館','としょかん','perpustakaan'],
+['美術館','びじゅつかん','museum seni'],
+['民俗資料館','みんぞくしりょうかん','museum rakyat'],
+['体育館','たいいくかん','gedung olahraga'],
+['スポーツジム','スポーツジム','pusat kebugaran'],
+['お風呂','おふろ','ruang berendam'],
+['入浴施設','にゅうよくしせつ','ruang mandi'],
+['インフォメーションコーナー','インフォメーションコーナー','pojok informasi'],
+['プラネタリウム','プラネタリウム','planetarium'],
+['物産コーナー','ぶっさんコーナー','pojok produk'],
+['市内','しない','dalam kota'],
+['パンフレット','パンフレット','pamflet'],
+['外国語','がいこくご','bahasa asing'],
+['CD','シーディー','CD'],
+['昔','むかし','dahulu'],
+['道具','どうぐ','peralatan'],
+['文化施設','ぶんかしせつ','pusat kebudayaan'],
+['建てる','たてる','mendirikan'],
+['メイン','メイン','utama'],
+['PC','ピーシー','PC'],
+['自由に','じゆうに','dengan bebas'],
+['展示する','てんじする','memamerkan'],
+['歴史','れきし','sejarah'],
+['利用する','りようする','menggunakan'],
+['室内用','しつないよう','dalam ruangan'],
+['オリエンテーション','オリエンテーション','orientasi'],
+['延長料金','えんちょうりょうきん','biaya perpanjangan'],
+['～につき','～につき','untuk setiap'],
+['かかる','かかる','biaya'],
+['下りる','おりる','turun'],
+['シューズ','シューズ','sepatu'],
+['マシン','マシン','mesin'],
+['トレーナー','トレーナー','pelatih'],
+['～ほど','～ほど','sekitar'],
+['受ける','うける','menerima'],
+['声をかける','こえをかける','menyapa'],
+['ご了承ください','ごりょうしょうください','Mohon dimaklumi'],
+['受けていただきます','うけていただきます','Silakan ikuti'],
+['絵','え','lukisan'],
+['さまざまな','さまざまな','berbagai macam'],
+['彫刻','ちょうこく','ukiran'],
+['画家','がか','pelukis'],
+['～を中心に','～をちゅうしんに','utamanya'],
+['セット券','セットけん','tiket terusan'],
+['フラッシュ','フラッシュ','flash'],
+['券売機','けんばいき','mesin tiket'],
+['休憩室','きゅうけいしつ','ruang santai'],
+['ついている','ついている','termasuk'],
+['IT','アイティー','IT'],
+['利用者カード','りようしゃカード','kartu pengguna'],
+['プリントアウト','プリントアウト','print-out'],
+['インターネット','インターネット','internet'],
+['プリンター','プリンター','printer'],
+['空いている','あいている','kosong'],
+['確認する','かくにんする','mengecek'],
+['在留カード','ざいりゅうカード','kartu izin tinggal'],
+['何冊','なんさつ','berapa jilid'],
+['～冊','～さつ','jilid'],
+['合わせて','あわせて','total'],
+['～点','～てん','buah'],
+['飲食禁止','いんしょくきんし','dilarang makan minum'],
+['返す','かえす','mengembalikan'],
+['閉まる','しまる','tutup'],
+['返却ポスト','へんきゃくポスト','kotak pengembalian'],
+['開く','あく','buka'],
+['返却','へんきゃく','pengembalian'],
+['お読みください','およみください','Silakan baca'],
+['延ばす','のばす','memperpanjang'],
+['～のうち','～のうち','dalam'],
+['カセットテープ','カセットテープ','kaset'],
+['～禁止','～きんし','larangan'],
+['立入禁止','たちいりきんし','larangan masuk'],
+['関係者','かんけいしゃ','staf berwenang'],
+['～以外','～いがい','kecuali'],
+['預ける','あずける','menitipkan'],
+['お預けください','おあずけください','Silakan titip'],
+['館内','かんない','dalam gedung'],
+['通話','つうわ','telepon'],
+['ご遠慮ください','ごえんりょください','Mohon jangan'],
+['お控えください','おひかえください','Mohon jangan'],
+['入館','にゅうかん','masuk gedung'],
+['入れ墨','いれずみ','tato Jepang'],
+['タトゥー','タトゥー','tato'],
+['シール','シール','stiker tato'],
+['ボディペイント','ボディペイント','body paint'],
+['お断りしています','おことわりしています','Kami menolak'],
+];
+
+let idx=0,show=false,sx=0,furi=false,hafalCount=0;
+const w=document.getElementById('w'),k=document.getElementById('k'),m=document.getElementById('m'),hint=document.getElementById('hint'),counter=document.getElementById('counter'),footer=document.getElementById('footer'),furiBtn=document.getElementById('furiBtn'),card=document.getElementById('card');
+
+function render(){
+ const d=DATA[idx];
+ w.textContent=d[0];k.textContent=d[1];m.textContent=d[2];
+ counter.textContent=(idx+1)+' / '+DATA.length;
+ footer.textContent=`Hafal: ${hafalCount} | Sisa: ${DATA.length-hafalCount} | swipe kiri/kanan = ganti`;
+ if(furi){k.style.display='block'; furiBtn.innerHTML='<b>ふりがな</b>ON';} else {furiBtn.innerHTML='<b>ふりがな</b>OFF';}
+ if(show){k.style.display='block';m.style.display='block';hint.textContent='ketuk untuk tutup';}
+ else{if(!furi)k.style.display='none';m.style.display='none';hint.textContent='ketuk untuk jawaban';}
 }
-.judul {
-  color:#ffdd00;
-  font-weight:900;
-  letter-spacing:2px;
-}
-.kartu {
-  width:100%;
-  max-width:380px;
-  height:480px;
-  background:#111;
-  border:2px solid #666;
-  border-radius:22px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  margin-top:14px;
-}
-.kata {
-  font-size:48px;
-  font-weight:900;
-}
-.baca {
-  color:#888;
-  margin-top:8px;
-}
-.arti {
-  font-size:22px;
-  margin-top:10px;
-}
-.pet
+function flip(){show=!show;render();}
+function toggleFuri(){furi=!furi;render();}
+function acak(){idx=Math.floor(Math.random()*DATA.length);show=false;render();}
+function hafal(){hafalCount++;idx=(idx+1)%DATA.length;show=false;render();}
+card.addEventListener('click',flip);
+card.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+card.addEventListener('touchend',e=>{
+ let dx=e.changedTouches[0].clientX-sx;
+ if(Math.abs(dx)>50){
+  if(dx<0) idx=(idx+1)%DATA.length; else idx=(idx-1+DATA.length)%DATA.length;
+  show=false;render();
+ }
+});
+render();
+</script>
+</body>
+</html>

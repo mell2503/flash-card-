@@ -28,26 +28,24 @@ body{margin:0;background:#000;color:#fff;font-family:monospace;display:flex;flex
 <body>
 <div class="header">
 <div class="title">IRODORI A2.2 -<br>BAB<br>13</div>
-<button class="furi-btn" id="furiBtn" onclick="toggleFuri()"><b>ふりがな</b>OFF</button>
+<button class="furi-btn" id="furiBtn"><b>ふりがな</b>OFF</button>
 </div>
 <div class="counter" id="counter">1 / 88</div>
-
 <div class="card" id="card">
 <div class="word" id="w"></div>
 <div class="read" id="k"></div>
 <div class="mean" id="m"></div>
 <div class="hint" id="hint">ketuk untuk jawaban</div>
 </div>
-
 <div class="btn-row">
-<div class="btn btn-white" onclick="acak()">🎲 Acak Kartu</div>
-<div class="btn btn-green" onclick="hafal()">✅ Sudah Hafal</div>
+<div class="btn btn-white" id="acakBtn">🎲 Acak Kartu</div>
+<div class="btn btn-green" id="hafalBtn">✅ Sudah Hafal</div>
 </div>
-<div class="btn-red">← Kembali ke Menu</div>
+<div class="btn-red" onclick="location.reload()">← Kembali ke Menu</div>
 <div class="footer" id="footer"></div>
 
 <script>
-const DATA=[
+let DATA=[
 ['公共','こうきょう','publik'],
 ['施設','しせつ','fasilitas'],
 ['図書館','としょかん','perpustakaan'],
@@ -138,29 +136,62 @@ const DATA=[
 ['お断りしています','おことわりしています','Kami menolak'],
 ];
 
-let idx=0,show=false,sx=0,furi=false,hafalCount=0;
+let idx=0,show=false,sx=0,furi=false;
 const w=document.getElementById('w'),k=document.getElementById('k'),m=document.getElementById('m'),hint=document.getElementById('hint'),counter=document.getElementById('counter'),footer=document.getElementById('footer'),furiBtn=document.getElementById('furiBtn'),card=document.getElementById('card');
 
 function render(){
+ if(DATA.length===0){w.textContent='SELESAI!';k.style.display='none';m.style.display='none';hint.textContent='semua hafal';return;}
  const d=DATA[idx];
  w.textContent=d[0];k.textContent=d[1];m.textContent=d[2];
  counter.textContent=(idx+1)+' / '+DATA.length;
- footer.textContent=`Hafal: ${hafalCount} | Sisa: ${DATA.length-hafalCount} | swipe kiri/kanan = ganti`;
- if(furi){k.style.display='block'; furiBtn.innerHTML='<b>ふりがな</b>ON';} else {furiBtn.innerHTML='<b>ふりがな</b>OFF';}
+ footer.textContent=`Sisa: ${DATA.length} | swipe kiri/kanan = ganti`;
  if(show){k.style.display='block';m.style.display='block';hint.textContent='ketuk untuk tutup';}
  else{if(!furi)k.style.display='none';m.style.display='none';hint.textContent='ketuk untuk jawaban';}
+ if(furi)k.style.display='block';
 }
+
 function flip(){show=!show;render();}
-function toggleFuri(){furi=!furi;render();}
-function acak(){idx=Math.floor(Math.random()*DATA.length);show=false;render();}
-function hafal(){hafalCount++;idx=(idx+1)%DATA.length;show=false;render();}
+
+// ACAK: kotoba+kanji diacak SEMUA, nomor balik ke 1
+function acakKartu(){
+ for(let i=DATA.length-1;i>0;i--){
+   let j=Math.floor(Math.random()*(i+1));
+   [DATA[i],DATA[j]]=[DATA[j],DATA[i]];
+ }
+ idx=0;
+ show=false;
+ render();
+}
+
+furiBtn.addEventListener('click',()=>{
+ furi=!furi;
+ furiBtn.innerHTML=furi?'<b>ふりがな</b>ON':'<b>ふりがな</b>OFF';
+ render();
+});
+
+document.getElementById('acakBtn').addEventListener('click',acakKartu);
+
+document.getElementById('hafalBtn').addEventListener('click',()=>{
+ // hapus kartu yang sudah hafal biar gak balik lagi
+ DATA.splice(idx,1);
+ if(idx>=DATA.length) idx=DATA.length-1;
+ if(DATA.length===0){idx=0;}
+ show=false;
+ render();
+});
+
 card.addEventListener('click',flip);
 card.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
 card.addEventListener('touchend',e=>{
  let dx=e.changedTouches[0].clientX-sx;
  if(Math.abs(dx)>50){
-  if(dx<0) idx=(idx+1)%DATA.length; else idx=(idx-1+DATA.length)%DATA.length;
-  show=false;render();
+  if(dx<0){
+    // swipe kiri -> next, kalo udah akhir JANGAN balik ke 1, stop
+    if(idx < DATA.length-1){idx++; show=false; render();}
+  } else {
+    // swipe kanan -> prev
+    if(idx>0){idx--; show=false; render();}
+  }
  }
 });
 render();

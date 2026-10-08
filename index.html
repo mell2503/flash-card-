@@ -1,49 +1,48 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Irodori A2.2</title><style>
-body{background:#000;color:#fff;font-family:'Courier New',monospace;margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 14px 20px 14px;box-sizing:border-box}
-.top{width:100%;max-width:400px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.title{color:#ffdd00;font-weight:800;font-size:15px;letter-spacing:2px}
-.furigana{border:1.5px solid #444;border-radius:20px;padding:6px 14px;font-size:11px;color:#ccc;background:#111}
-.counter{text-align:center;color:#666;font-size:14px;letter-spacing:4px;margin:8px 0 16px 0}
-.card{width:100%;max-width:400px;aspect-ratio:0.85/1.2;background:#111;border:1.5px solid #555;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;user-select:none}
-.word{font-size:44px;font-weight:900;letter-spacing:2px;text-align:center;padding:0 20px;line-height:1.2}
-.kana-small{font-size:20px;color:#aaa;margin-top:10px;display:none}
-.arti{font-size:20px;color:#fff;margin-top:14px;display:none;text-align:center;padding:0 20px}
-.tap-hint{position:absolute;bottom:32px;color:#555;font-size:12px;letter-spacing:1px}
-.btns{width:100%;max-width:400px;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
-.btn{padding:16px 8px;border-radius:10px;background:#000;font-family:'Courier New',monospace;font-weight:700;font-size:13px;letter-spacing:1px}
-.b-random{border:2px solid #fff;color:#fff}
-.b-hafal{border:2px solid #00ff66;color:#00ff66}
-.b-menu{border:2px solid #ff4444;color:#ff6666;grid-column:1/3;margin-top:2px}
-.progress{font-size:10px;color:#333;margin-top:12px;text-align:center;width:100%;max-width:400px}
-</style></head><body>
-<div class="top"><div class="title">IRODORI A2.2 - BAB 13</div><div class="furigana" id="furiBtn" onclick="toggleFuri()">ふりがな OFF</div></div>
-<div class="counter" id="counter">1 / 88</div>
-<div class="card" id="card">
-<div class="word" id="word">ラッシュ</div>
-<div class="kana-small" id="kana"></div>
-<div class="arti" id="arti"></div>
-<div class="tap-hint" id="hint">ketuk untuk jawaban</div>
-</div>
-<div class="btns">
-<button class="btn b-random" onclick="acak()">🎲 Acak Kartu</button>
-<button class="btn b-hafal" onclick="hafal()">✅ Sudah Hafal</button>
-<button class="btn b-menu" onclick="reset()">← Kembali ke Menu</button>
-</div>
-<div class="progress" id="prog">Hafal: 0 | Sisa: 88 | swipe kiri/kanan = ganti</div>
-<script>
-let original=[["公共","こうきょう","publik"],["施設","しせつ","fasilitas"],["図書館","としょかん","perpustakaan"],["美術館","びじゅつかん","museum seni"],["民俗資料館","みんぞくしりょうかん","museum rakyat"],["体育館","たいいくかん","gedung olahraga"],["スポーツジム","スポーツジム","pusat kebugaran"],["お風呂","おふろ","ruang berendam"],["入浴施設","にゅうよくしせつ","ruang mandi"],["インフォメーションコーナー","インフォメーションコーナー","ruang informasi"],["プラネタリウム","プラネタリウム","planetarium"],["物産コーナー","ぶっさんコーナー","pojok produk"],["市内","しない","dalam kota"],["パンフレット","パンフレット","pamflet"],["外国語","がいこくご","bahasa asing"],["CD","シーディー","CD"],["昔","むかし","dahulu"],["道具","どうぐ","peralatan"],["文化施設","ぶんかしせつ","pusat kebudayaan"],["建てる","たてる","mendirikan"],["メイン","メイン","utama"],["PC","ピーシー","komputer"],["自由に","じゆうに","dengan bebas"],["展示する","てんじする","memamerkan"],["歴史","れきし","sejarah"],["利用する","りようする","menggunakan"],["室内用","しつないよう","untuk dalam ruangan"],["オリエンテーション","オリエンテーション","orientasi"],["延長料金","えんちょうりょうきん","biaya perpanjangan"],["～につき","～につき","untuk setiap ~"],["かかる","かかる","dikenakan biaya"],["下りる","おりる","turun"],["シューズ","シューズ","sepatu"],["マシン","マシン","mesin"],["トレーナー","トレーナー","pelatih"],["～ほど","～ほど","sekitar ~"],["受ける","うける","menerima"],["声をかける","こえをかける","menyapa"],["ご了承ください","ごりょうしょうください","Mohon dipahami"],["受けていただきます","うけていただきます","mohon untuk mengikuti"],["絵","え","lukisan"],["さまざまな","さまざまな","berbagai macam"],["彫刻","ちょうこく","ukiran"],["画家","がか","pelukis"],["～を中心に","～をちゅうしんに","utamanya"],["セット券","セットけん","tiket terusan"],["フラッシュ","フラッシュ","lampu kilat"],["券売機","けんばいき","mesin tiket"],["休憩室","きゅうけいしつ","ruang santai"],["ついている","ついている","termasuk"],["IT","アイティー","IT"],["利用者カード","りようしゃカード","kartu pengguna"],["プリントアウト","プリントアウト","print-out"],["インターネット","インターネット","internet"],["プリンター","プリンター","printer"],["空いている","あいている","kosong"],["確認する","かくにんする","mengecek"],["在留カード","ざいりゅうカード","kartu izin tinggal"],["何冊","なんさつ","berapa jilid"],["～冊","～さつ","~ jilid"],["合わせて","あわせて","total"],["～点","～てん","~ buah"],["飲食禁止","いんしょくきんし","larangan makan minum"],["返す","かえす","mengembalikan"],["閉まる","しまる","tutup"],["返却ポスト","へんきゃくポスト","kotak pengembalian"],["開く","あく","buka"],["返却","へんきゃく","pengembalian"],["お読みください","およみください","Silakan baca"],["延ばす","のばす","memperpanjang"],["～のうち","～のうち","dalam ~"],["カセットテープ","カセットテープ","kaset"],["～禁止","～きんし","larangan ~"],["立入禁止","たちいりきんし","larangan masuk"],["関係者","かんけいしゃ","staf"],["～以外","～いがい","kecuali ~"],["預ける","あずける","menitipkan"],["お預けください","おあずけください","Silakan titip"],["館内","かんない","dalam gedung"],["通話","つうわ","telepon"],["ご遠慮ください","ごえんりょください","Mohon jangan"],["お控えください","おひかえください","Mohon jangan"],["入館","にゅうかん","masuk gedung"],["入れ墨","いれずみ","tato Jepang"],["タトゥー","タトゥー","tato"],["シール","シール","stiker tato"],["ボディペイント","ボディペイント","body paint"],["お断りしています","おことわりしています","Kami menolak"]];
-let deck=[...original],hafal=[],idx=0,showAns=false,furi=false,startX=0;
-let wordEl=document.getElementById('word'),kanaEl=document.getElementById('kana'),artiEl=document.getElementById('arti'),hintEl=document.getElementById('hint'),counterEl=document.getElementById('counter'),progEl=document.getElementById('prog'),card=document.getElementById('card');
-function render(){if(deck.length==0){wordEl.textContent='🎉';kanaEl.style.display='none';artiEl.style.display='block';artiEl.textContent='Semua 88 kata hafal!';hintEl.textContent='';counterEl.textContent='0 / 0';return}let d=deck[idx];wordEl.textContent=d[0];kanaEl.textContent=d[1];artiEl.textContent=d[2];if(showAns){kanaEl.style.display=furi?'block':'none';artiEl.style.display='block';hintEl.textContent='ketuk untuk tutup';if(furi)kanaEl.style.display='block';}else{kanaEl.style.display='none';artiEl.style.display='none';hintEl.textContent='ketuk untuk jawaban'}counterEl.textContent=(idx+1)+' / '+deck.length;progEl.textContent=`Hafal: ${hafal.length} | Sisa: ${deck.length} | swipe kiri/kanan = ganti`}
-function toggleFuri(){furi=!furi;document.getElementById('furiBtn').textContent=furi?'ふりがな ON':'ふりがな OFF';render()}
-function next(){idx=(idx+1)%deck.length;showAns=false;render()}
-function prev(){idx=(idx-1+deck.length)%deck.length;showAns=false;render()}
-function flip(){showAns=!showAns;render()}
-card.addEventListener('touchstart',e=>{startX=e.touches[0].clientX},{passive:true});
-card.addEventListener('touchend',e=>{let diff=e.changedTouches[0].clientX-startX;if(Math.abs(diff)>50){if(diff<0)next();else prev()}else if(Math.abs(diff)<10){flip()}});
-card.addEventListener('click',()=>{flip()});
-function acak(){for(let i=deck.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}idx=0;showAns=false;render()}
-function hafal(){if(deck.length==0)return;hafal.push(deck[idx]);deck.splice(idx,1);if(idx>=deck.length)idx=0;showAns=false;render()}
-function reset(){if(confirm('Reset ke 88 kata awal?')){deck=[...original];hafal=[];idx=0;showAns=false;render()}}
-render();
-</script></body></html>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Irodori</title>
+<style>
+body {
+  background:#000;
+  color:#fff;
+  font-family:monospace;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:14px;
+}
+.judul {
+  color:#ffdd00;
+  font-weight:900;
+  letter-spacing:2px;
+}
+.kartu {
+  width:100%;
+  max-width:380px;
+  height:480px;
+  background:#111;
+  border:2px solid #666;
+  border-radius:22px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin-top:14px;
+}
+.kata {
+  font-size:48px;
+  font-weight:900;
+}
+.baca {
+  color:#888;
+  margin-top:8px;
+}
+.arti {
+  font-size:22px;
+  margin-top:10px;
+}
+.pet
